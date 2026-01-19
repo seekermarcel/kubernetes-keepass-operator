@@ -1,0 +1,17 @@
+apiVersion: v2
+name: kubernetes-keepass-operator
+description: A Kubernetes operator that creates Secrets from encrypted KeePass databases
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - kubernetes
+  - operator
+  - keepass
+  - secrets
+  - secret-management
+maintainers:
+  - name: KeePass Operator Team
+home: https://github.com/seekermarcel/kubernetes-keepass-operator
+sources:
+  - https://github.com/seekermarcel/kubernetes-keepass-operator

@@ -1,0 +1,115 @@
+# Default values for kubernetes-keepass-operator
+
+# Number of replicas (only 1 recommended due to leader election)
+replicaCount: 1
+
+image:
+  repository: ghcr.io/seekermarcel/kubernetes-keepass-operator
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Service account configuration
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# Pod annotations
+podAnnotations: {}
+
+# Pod security context
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container security context
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+
+# Resource limits and requests
+resources:
+  requests:
+    cpu: 25m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity rules
+affinity: {}
+
+# Domain passwords configuration
+# This is the KeePass database containing namespace passwords
+domainPasswords:
+  # Enable mounting domain-passwords.kdbx
+  enabled: false
+  # Name of the ConfigMap containing domain-passwords.kdbx
+  configMapName: domain-passwords
+  # Key in the ConfigMap
+  key: domain-passwords.kdbx
+
+# Master password configuration
+masterPassword:
+  # Name of the existing Secret containing the master password
+  # This secret must exist before installing the chart
+  existingSecret: ""
+  # Key in the secret containing the password
+  key: password
+
+# Leader election configuration
+leaderElection:
+  enabled: true
+
+# Metrics configuration
+metrics:
+  # Enable metrics endpoint
+  enabled: true
+  # Port for metrics
+  port: 8443
+  # Enable HTTPS for metrics
+  secure: true
+
+# Health probe configuration
+health:
+  # Liveness probe port
+  port: 8081
+  # Initial delay for liveness probe
+  initialDelaySeconds: 15
+  # Period for liveness probe
+  periodSeconds: 20
+
+# Logging configuration
+logging:
+  # Log level: debug, info, error
+  level: info
+  # Use development mode logging (more human-readable)
+  development: false
+
+# Additional environment variables
+extraEnv: []
+
+# Additional volumes
+extraVolumes: []
+
+# Additional volume mounts
+extraVolumeMounts: []

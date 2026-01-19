@@ -1,0 +1,50 @@
+Thank you for installing {{ .Chart.Name }}!
+
+Your release is named: {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+
+To verify the installation:
+
+  kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "keepass-operator.name" . }}
+
+To check the CRD:
+
+  kubectl get crd keepasssecrets.secrets.keepass.io
+
+To create a KeePassSecret:
+
+1. First, create a ConfigMap with your .kdbx file:
+
+  kubectl create configmap my-keepass-db \
+    --from-file=secrets.kdbx=/path/to/your/secrets.kdbx \
+    -n your-namespace
+
+2. Create a Secret with the password:
+
+  kubectl create secret generic keepass-password \
+    --from-literal=password='your-kdbx-password' \
+    -n your-namespace
+
+3. Create a KeePassSecret resource:
+
+  cat <<EOF | kubectl apply -f -
+  apiVersion: secrets.keepass.io/v1alpha1
+  kind: KeePassSecret
+  metadata:
+    name: my-secrets
+    namespace: your-namespace
+  spec:
+    sourceRef:
+      kind: ConfigMap
+      name: my-keepass-db
+      key: secrets.kdbx
+    passwordRef:
+      secretName: keepass-password
+      secretKey: password
+  EOF
+
+4. Check the status:
+
+  kubectl get keepasssecret my-secrets -n your-namespace -o yaml
+
+For more information, visit: {{ .Chart.Home }}

@@ -1,0 +1,41 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "keepass-operator.clusterRoleName" . }}
+  labels:
+    {{- include "keepass-operator.labels" . | nindent 4 }}
+rules:
+  # Core operations for secrets
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Read-only access to configmaps (source for kdbx files)
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+  
+  # Events for logging
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+  
+  # KeePassSecret CRD operations
+  - apiGroups: ["secrets.keepass.io"]
+    resources: ["keepasssecrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  - apiGroups: ["secrets.keepass.io"]
+    resources: ["keepasssecrets/status"]
+    verbs: ["get", "update", "patch"]
+  
+  - apiGroups: ["secrets.keepass.io"]
+    resources: ["keepasssecrets/finalizers"]
+    verbs: ["update"]
+
+  # Leader election
+  {{- if .Values.leaderElection.enabled }}
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  {{- end }}
