@@ -61,7 +61,7 @@ func (d *Database) ExtractSecrets(defaultSecretName string) ([]GroupedSecrets, e
 	d.processGroup(root, defaultSecretName, secretsMap)
 
 	// Convert map to slice
-	var result []GroupedSecrets
+	result := make([]GroupedSecrets, 0, len(secretsMap))
 	for _, gs := range secretsMap {
 		result = append(result, *gs)
 	}

@@ -20,7 +20,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -352,7 +351,7 @@ func (r *KeePassSecretReconciler) createOrUpdateSecrets(
 	groupedSecrets []keepass.GroupedSecrets,
 ) ([]secretsv1alpha1.GeneratedSecretInfo, error) {
 	log := logf.FromContext(ctx)
-	var generatedInfo []secretsv1alpha1.GeneratedSecretInfo
+	generatedInfo := make([]secretsv1alpha1.GeneratedSecretInfo, 0, len(groupedSecrets))
 
 	for _, gs := range groupedSecrets {
 		// Skip empty groups
@@ -524,11 +523,4 @@ func (r *KeePassSecretReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&corev1.Secret{}).
 		Named("keepasssecret").
 		Complete(r)
-}
-
-// Helper function to get the base name without extension from a path
-func baseName(path string) string {
-	base := filepath.Base(path)
-	ext := filepath.Ext(base)
-	return strings.TrimSuffix(base, ext)
 }
